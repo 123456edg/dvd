@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Goods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updatedAt" />
+    <result column="is_delete" jdbcType="BIT" property="isDelete" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_type" jdbcType="INTEGER" property="goodsType" />
+    <result column="repertory" jdbcType="DECIMAL" property="repertory" />
+    <result column="selling_price" jdbcType="DECIMAL" property="sellingPrice" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="sell_state" jdbcType="INTEGER" property="sellState" />
+    <result column="new_state" jdbcType="INTEGER" property="newState" />
+    <result column="specifi" jdbcType="VARCHAR" property="specifi" />
+    <result column="units" jdbcType="VARCHAR" property="units" />
+    <result column="quality_goods" jdbcType="VARCHAR" property="qualityGoods" />
+    <result column="site" jdbcType="VARCHAR" property="site" />
+    <result column="exposure_number" jdbcType="INTEGER" property="exposureNumber" />
+    <result column="director" jdbcType="VARCHAR" property="director" />
+    <result column="scriptwriter" jdbcType="VARCHAR" property="scriptwriter" />
+    <result column="jade_laroche" jdbcType="VARCHAR" property="jadeLaroche" />
+    <result column="producer_country" jdbcType="VARCHAR" property="producerCountry" />
+    <result column="language" jdbcType="VARCHAR" property="language" />
+    <result column="release_date" jdbcType="VARCHAR" property="releaseDate" />
+    <result column="footage" jdbcType="VARCHAR" property="footage" />
+    <result column="alternate_name" jdbcType="VARCHAR" property="alternateName" />
+    <result column="graphic_details" jdbcType="LONGVARCHAR" property="graphicDetails" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="amount_of_sheets" jdbcType="INTEGER" property="amountOfSheets" />
+    <result column="earnest_money" jdbcType="DECIMAL" property="earnestMoney" />
+  </resultMap>
+
+    <select id="findByAllIds" resultMap="BaseResultMap">
+        select *
+        from t_goods
+        where is_delete = 0
+        and id in
+        <foreach collection="array" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select *
+        from t_goods
+        where is_delete = 0
+        <if test="sellState != null and sellState != ''">
+          and sell_state = #{sellState}
+        </if>
+        <if test="newState != null and newState != ''">
+          and new_state = #{newState}
+        </if>
+        <if test="goodsType != null and goodsType != ''">
+          and goods_type = #{goodsType}
+        </if>
+        <if test="producerCountry != null and producerCountry != ''">
+            and producer_country like concat('%',#{producerCountry},'%')
+        </if>
+        <if test="goodsName != null and goodsName != ''">
+            and goods_name like concat('%',#{goodsName},'%') or director like concat('%',#{goodsName},'%') or
+            id=#{goodsName}
+        </if>
+        <if test="director != null and director != ''">
+            and director like concat('%',#{director},'%')
+        </if>
+
+        <if test="grade != null and grade != ''">
+            order by grade desc
+        </if>
+    </select>
+
+  <select id="detail" resultMap="BaseResultMap">
+        select *
+        from t_goods
+        where is_delete = 0
+        and id = #{id}
+    </select>
+
+  <select id="selectByGoodsTypeId" resultMap="BaseResultMap">
+        select *
+        from t_goods t
+        where t.is_delete = 0
+        and t.goods_type = #{goodsTypeId}
+    </select>
+
+  <select id="findGoodsCount" resultType="java.lang.Integer">
+        select count(1)
+        from t_goods
+        where is_delete = 0
+        and id = #{goodsId}
+    </select>
+
+</mapper>
